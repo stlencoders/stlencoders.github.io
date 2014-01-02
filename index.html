@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>stlencoders by stlencoders</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">stlencoders</h1>
+        <p class="header">Generic Base2/16/32/64 Encoding Algorithms for C++</p>
+
+
+
+        <ul>
+          <li><a class="buttons github" href="https://github.com/stlencoders">GitHub Profile</a></li>
+        </ul>
+
+      </header>
+      <section>
+        <p><strong>stlencoders</strong> is a C++ implementation of the Base16, Base32 and Base64 encoding schemes as defined in <a href="http://www.apps.ietf.org/rfc/rfc4648.html">RFC 4648</a>.  Base2, i.e. binary encoding, is also supported.</p>
+
+<p>In a nutshell, the <strong>stlencoders</strong> library</p>
+
+<ul>
+<li>implements encoding and decoding operations as <em>generic algorithms</em> that operate on STL-style iterators</li>
+<li>supports different encoding alphabets using custom <em>traits classes</em>
+</li>
+<li>supports wide-character encodings, at least on platforms where <a href="http://unicode.org/uni2book/ch05.pdf">the characters from the portable C execution set correspond to their wide character equivalents by zero extension</a>
+</li>
+<li>comes with full documentation and an extensive unit test suite</li>
+<li>is implemented as a <em>header-only</em> library, i.e. requires no separately-compiled library binaries or special treatment when linking; this also means that installation is as simple as copying the header files to a location of your convenience</li>
+<li>is designed to be highly portable and has been tested on Windows and Linux with a number of different compilers</li>
+<li>provides reasonable performance that matches most (if not all) alternative implementations</li>
+</ul><h3>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h3>
+
+<p>A simple program that Base64-encodes standard input to standard output can be essentially written as:</p>
+
+<pre><code>#include &lt;stlencoders/base64.hpp&gt;
+
+#include &lt;iostream&gt;
+#include &lt;iterator&gt;
+
+int main()
+{
+    std::istreambuf_iterator&lt;char&gt; in(std::cin);
+    std::istreambuf_iterator&lt;char&gt; end;
+    std::ostreambuf_iterator&lt;char&gt; out(std::cout);
+
+    stlencoders::base64&lt;char&gt;::encode(in, end, out);
+
+    return 0;
+}
+</code></pre>
+
+<p>To produce MIME-compliant output, i.e. limit the line length of encoded data to 76 characters with CRLF as line delimiter, use an output iterator adaptor such as <code>stlencoders::line_wrapper</code>:</p>
+
+<pre><code>stlencoders::base64&lt;char&gt;::encode(in, end, stlencoders::line_wrapper(out, 76, "\r\n"));
+</code></pre>
+
+<p>To use a different encoding alphabet, such as the <em>base64url</em> scheme, which uses the characters '-' and '_' instead of '+' and '/', provide an appropriate traits class:</p>
+
+<pre><code>stlencoders::base64&lt;char, stlencoders::base64url_traits&lt;char&gt; &gt;::encode(in, end, out);
+</code></pre>
+
+<p>When decoding, a <em>predicate</em> can be specified to indicate which non-alphabet characters should be ignored. To skip all whitespace in a locale-aware manner, one can use</p>
+
+<pre><code>stlencoders::base64&lt;char&gt;::decode(in, end, out, std::bind(std::isspace&lt;char&gt;, _1, std::locale()));
+</code></pre>
+
+<p>Of course, <strong>stlencoders</strong> can work with other container types, too. Even wide-character strings are supported:</p>
+
+<pre><code>std::wstring s(L"Zm9vYmFy");
+std::vector&lt;std::uint8_t&gt; v;
+
+stlencoders::base64&lt;wchar_t&gt;::decode(s.begin(), s.end(), std::back_inserter(v));
+</code></pre>
+
+<h3>
+<a name="credits" class="anchor" href="#credits"><span class="octicon octicon-link"></span></a>Credits</h3>
+
+<p><strong>stlencoders</strong> was inspired by Nick Galbreath's excellent <a href="http://code.google.com/p/stringencoders/">stringencoders</a> library.  If you strive for maximum performance, or happen to code in plain C, check it out!</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-46450872-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
